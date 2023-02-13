@@ -1,0 +1,68 @@
+from torch import tensor, randn
+import torch.nn as nn
+from torch.optim import SGD
+
+def autograd_example_complex():
+    x = randn(10, 3)
+    y = randn(10, 2)
+    
+    #build a fully connected layer
+
+    linear = nn.Linear(3,2)
+    #print('w: ', linear.weight)
+    #print('b: ', linear.bias)
+
+    #loss function and optimizer
+    criterion = nn.MSELoss()
+    optimizer = SGD(linear.parameters(), lr=0.01)
+
+    tol = 1e-2
+    step = 0
+    loss = 1e100    
+    while step < 25:
+        #Forward pass
+        pred = linear(x)
+
+        #computer loss
+        loss = criterion(pred, y)
+        print(f'step: {step} *** loss:  {loss.item()}')
+
+        loss.backward()
+        
+        #print out the gradients
+        #print('dL/dw: ', linear.weight.grad)
+        #print('dL/db: ', linear.bias.grad)
+
+        #1-setp GD
+        optimizer.step()
+        step += 1
+        #loss after 1 step
+        #pred = linear(x)
+        #loss = criterion(pred, y)
+        #print('loss after 1-step gd: ', loss.item())
+
+
+
+def autograd_example():
+
+    x = tensor(1., requires_grad= True)
+    w = tensor(2., requires_grad= True)
+    b = tensor(3., requires_grad= True)
+
+    y = w * x + b
+
+    y.backward()
+
+    #print(x.grad)
+    #print(w.grad)
+    #print(b.grad)
+    print(y)
+
+
+def main():
+    #autograd_example()
+    autograd_example_complex()
+
+
+if __name__ == "__main__":
+    main()
